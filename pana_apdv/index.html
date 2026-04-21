@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PANA — Applied Visual</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #070707;
+    --white: #f7f7f7;
+    --blue: #002281;
+    --font: 'Manrope', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--font);
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 10px; height: 10px;
+    background: var(--white);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease, width 0.2s ease, height 0.2s ease;
+    transform: translate(-50%, -50%);
+  }
+  .cursor.expand {
+    width: 40px; height: 40px;
+    background: transparent;
+    border: 1px solid var(--white);
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 28px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    mix-blend-mode: difference;
+  }
+  nav img { height: 22px; filter: invert(0); }
+  nav a {
+    color: var(--white);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+  }
+  nav a:hover { opacity: 1; }
+  nav .nav-links { display: flex; gap: 36px; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 48px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(120px, 20vw, 260px);
+    font-weight: 700;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(247,247,247,0.06);
+    white-space: nowrap;
+    pointer-events: none;
+    letter-spacing: -0.04em;
+    animation: slowdrift 20s ease-in-out infinite alternate;
+  }
+  @keyframes slowdrift {
+    from { transform: translate(-50%, -50%) translateX(-20px); }
+    to   { transform: translate(-50%, -50%) translateX(20px); }
+  }
+  .hero-logo-big {
+    width: clamp(80px, 10vw, 140px);
+    margin-bottom: 48px;
+    animation: fadeup 1.2s cubic-bezier(0.16,1,0.3,1) both;
+  }
+  .hero-title {
+    font-size: clamp(42px, 7vw, 96px);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    max-width: 900px;
+    animation: fadeup 1.2s cubic-bezier(0.16,1,0.3,1) 0.1s both;
+  }
+  .hero-title span { color: var(--blue); }
+  .hero-sub {
+    margin-top: 32px;
+    font-size: 14px;
+    font-weight: 300;
+    letter-spacing: 0.08em;
+    opacity: 0.5;
+    text-transform: uppercase;
+    animation: fadeup 1.2s cubic-bezier(0.16,1,0.3,1) 0.2s both;
+  }
+  .hero-cta {
+    margin-top: 48px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid rgba(247,247,247,0.3);
+    padding: 14px 28px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--white);
+    text-decoration: none;
+    transition: background 0.3s, border-color 0.3s;
+    width: fit-content;
+    animation: fadeup 1.2s cubic-bezier(0.16,1,0.3,1) 0.3s both;
+  }
+  .hero-cta:hover {
+    background: var(--blue);
+    border-color: var(--blue);
+  }
+  .hero-cta .arrow {
+    display: inline-block;
+    transition: transform 0.3s;
+  }
+  .hero-cta:hover .arrow { transform: translateX(6px); }
+
+  @keyframes fadeup {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SECTION BASE */
+  section { padding: 120px 48px; }
+  .label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 24px;
+  }
+
+  /* SOBRE NOSOTROS */
+  .about { background: var(--black); }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    margin-top: 60px;
+  }
+  .about-text h2 {
+    font-size: clamp(32px, 4vw, 56px);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 28px;
+  }
+  .about-text p {
+    font-size: 16px;
+    line-height: 1.8;
+    opacity: 0.6;
+    max-width: 480px;
+  }
+  .about-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+  }
+  .stat {
+    background: #0f0f0f;
+    padding: 40px 32px;
+    border: 1px solid rgba(247,247,247,0.06);
+  }
+  .stat-num {
+    font-size: 48px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--white);
+    line-height: 1;
+  }
+  .stat-num span { color: var(--blue); }
+  .stat-label {
+    font-size: 12px;
+    font-weight: 300;
+    opacity: 0.4;
+    margin-top: 8px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* PROBLEMA */
+  .problema {
+    background: var(--blue);
+    position: relative;
+    overflow: hidden;
+  }
+  .problema::before {
+    content: '';
+    position: absolute;
+    top: -100px; right: -100px;
+    width: 500px; height: 500px;
+    border: 1px solid rgba(247,247,247,0.08);
+    border-radius: 50%;
+  }
+  .problema::after {
+    content: '';
+    position: absolute;
+    bottom: -150px; right: -50px;
+    width: 700px; height: 700px;
+    border: 1px solid rgba(247,247,247,0.05);
+    border-radius: 50%;
+  }
+  .problema h2 {
+    font-size: clamp(28px, 4vw, 52px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    max-width: 700px;
+    margin-bottom: 48px;
+  }
+  .problema-items {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 60px;
+  }
+  .problema-item {
+    background: rgba(0,0,0,0.2);
+    padding: 40px 32px;
+    border-top: 2px solid rgba(247,247,247,0.2);
+  }
+  .problema-item h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .problema-item p {
+    font-size: 14px;
+    font-weight: 300;
+    opacity: 0.7;
+    line-height: 1.7;
+  }
+
+  /* ANTES DESPUES */
+  .beforeafter { background: #0a0a0a; }
+  .beforeafter h2 {
+    font-size: clamp(32px, 4vw, 56px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 60px;
+  }
+  .ba-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+  }
+  .ba-item {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+  }
+  .ba-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.8s cubic-bezier(0.16,1,0.3,1);
+  }
+  .ba-item:hover img { transform: scale(1.04); }
+  .ba-tag {
+    position: absolute;
+    bottom: 20px; left: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    background: var(--black);
+    color: var(--white);
+  }
+  .ba-tag.after { background: var(--blue); }
+
+  /* SERVICIOS */
+  .servicios { background: var(--black); }
+  .servicios h2 {
+    font-size: clamp(32px, 4vw, 56px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 60px;
+    max-width: 600px;
+  }
+  .servicios-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+  }
+  .servicio-item {
+    padding: 48px 40px;
+    border: 1px solid rgba(247,247,247,0.06);
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+  .servicio-item:hover { border-color: rgba(0,34,129,0.6); }
+  .servicio-item::before {
+    content: attr(data-num);
+    position: absolute;
+    top: 32px; right: 32px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    opacity: 0.2;
+    color: var(--blue);
+  }
+  .servicio-item h3 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    letter-spacing: -0.01em;
+  }
+  .servicio-item p {
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 1.8;
+    opacity: 0.5;
+  }
+
+  /* PROCESO */
+  .proceso { background: #070707; border-top: 1px solid rgba(247,247,247,0.06); }
+  .proceso h2 {
+    font-size: clamp(32px, 4vw, 56px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 80px;
+  }
+  .proceso-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+  }
+  .step {
+    padding: 0 40px 0 0;
+    border-right: 1px solid rgba(247,247,247,0.08);
+    padding-right: 40px;
+  }
+  .step:last-child { border-right: none; padding-right: 0; padding-left: 40px; }
+  .step:not(:first-child) { padding-left: 40px; }
+  .step-num {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: var(--blue);
+    margin-bottom: 32px;
+  }
+  .step h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+  .step p {
+    font-size: 13px;
+    font-weight: 300;
+    line-height: 1.8;
+    opacity: 0.45;
+  }
+
+  /* CTA FINAL */
+  .cta-final {
+    background: var(--white);
+    color: var(--black);
+    text-align: center;
+    padding: 140px 48px;
+  }
+  .cta-final .label { color: var(--blue); }
+  .cta-final h2 {
+    font-size: clamp(36px, 6vw, 80px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+    margin-bottom: 48px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .cta-final a {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--black);
+    color: var(--white);
+    text-decoration: none;
+    padding: 18px 40px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transition: background 0.3s;
+  }
+  .cta-final a:hover { background: var(--blue); }
+
+  /* FOOTER */
+  footer {
+    background: var(--black);
+    padding: 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(247,247,247,0.06);
+  }
+  footer img { height: 18px; opacity: 0.4; }
+  footer p {
+    font-size: 11px;
+    font-weight: 300;
+    opacity: 0.25;
+    letter-spacing: 0.1em;
+  }
+
+  /* REVEAL ANIMATION */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1);
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    nav { padding: 24px; }
+    nav .nav-links { display: none; }
+    section { padding: 80px 24px; }
+    .hero { padding: 0 24px 60px; }
+    .about-grid { grid-template-columns: 1fr; gap: 48px; }
+    .problema-items { grid-template-columns: 1fr; }
+    .ba-grid { grid-template-columns: 1fr; }
+    .servicios-list { grid-template-columns: 1fr; }
+    .proceso-steps { grid-template-columns: 1fr 1fr; gap: 40px; }
+    .step { border-right: none; padding: 0 !important; }
+    footer { flex-direction: column; gap: 16px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+
+<nav>
+  <img src="/pana_apdv/images/logotipo.png">
+  <div class="nav-links">
+    <a href="#nosotros">Nosotros</a>
+    <a href="#trabajo">Trabajo</a>
+    <a href="#servicios">Servicios</a>
+    <a href="#contacto">Contacto</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-text">VISUAL</div>
+  <img src="/pana_apdv/images/logo.png">
+    La primera impresión<br>se toma desde <span>la calle.</span>
+  </h1>
+  <p class="hero-sub">Diseño aplicado al frente de tu local · Córdoba, Argentina</p>
+  <a href="#contacto" class="hero-cta">
+    Hablemos <span class="arrow">→</span>
+  </a>
+</section>
+
+<!-- NOSOTROS -->
+<section class="about" id="nosotros">
+  <div class="label reveal">Quiénes somos</div>
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <h2>Hacemos que tu local comunique antes de que entren.</h2>
+      <p>PANA es un estudio de diseño aplicado especializado en la identidad visual del frente de locales comerciales. Trabajamos el vinilo, el cartelería y la gráfica exterior para que tu negocio llame la atención, transmita valor y genere más intención de entrada.</p>
+    </div>
+    <div class="about-stats reveal">
+      <div class="stat">
+        <div class="stat-num">3<span>s</span></div>
+        <div class="stat-label">Tiempo promedio de decisión desde la calle</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">1<span>ra</span></div>
+        <div class="stat-label">Impresión que no se puede repetir</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">100<span>%</span></div>
+        <div class="stat-label">Foco en el frente del local</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">CBA</div>
+        <div class="stat-label">Basados en Córdoba, Argentina</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEMA -->
+<section class="problema">
+  <div class="label reveal">El problema</div>
+  <h2 class="reveal">Muchas veces el problema no es el producto.<br>Es cómo se percibe desde afuera.</h2>
+  <div class="problema-items">
+    <div class="problema-item reveal">
+      <h3>No se entiende qué vendés</h3>
+      <p>Sin comunicación clara en el frente, el potencial cliente no sabe si entrar vale la pena.</p>
+    </div>
+    <div class="problema-item reveal">
+      <h3>No llama la atención</h3>
+      <p>En una cuadra con varios locales, el que no destaca visualmente pierde tráfico sin saberlo.</p>
+    </div>
+    <div class="problema-item reveal">
+      <h3>No transmite valor</h3>
+      <p>Un frente genérico no genera confianza. La percepción visual impacta directo en la decisión de entrar.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ANTES / DESPUES -->
+<section class="beforeafter" id="trabajo">
+  <div class="label reveal">Trabajo</div>
+  <h2 class="reveal">Antes y después.</h2>
+  <div class="ba-grid reveal">
+    <div class="ba-item">
+      <img src="/pana_apdv/images/image after.png">
+      <div class="ba-tag">Antes</div>
+    </div>
+    <div class="ba-item">
+      <img src="/pana_apdv/images/image before.png">
+      <div class="ba-tag after">Después</div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICIOS -->
+<section class="servicios" id="servicios">
+  <div class="label reveal">Qué hacemos</div>
+  <h2 class="reveal">Diseño aplicado al frente de tu local.</h2>
+  <div class="servicios-list">
+    <div class="servicio-item reveal" data-num="01">
+      <h3>Diseño de vinilo y lettering</h3>
+      <p>Tipografía, ilustración y gráfica aplicada directamente sobre el vidrio del local. Bold, limpio, impactante.</p>
+    </div>
+    <div class="servicio-item reveal" data-num="02">
+      <h3>Cartelería exterior</h3>
+      <p>Diseño e implementación de carteles, marquesinas y señalética que comuniquen quién sos desde la calle.</p>
+    </div>
+    <div class="servicio-item reveal" data-num="03">
+      <h3>Identidad visual aplicada</h3>
+      <p>Si ya tenés marca, la adaptamos al frente. Si no, la creamos. Siempre con foco en la legibilidad desde la vereda.</p>
+    </div>
+    <div class="servicio-item reveal" data-num="04">
+      <h3>Consultoría de primera impresión</h3>
+      <p>Analizamos tu local y te decimos exactamente qué cambiar para aumentar la intención de entrada. Sin rodeos.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESO -->
+<section class="proceso">
+  <div class="label reveal">Cómo trabajamos</div>
+  <h2 class="reveal">Simple y directo.</h2>
+  <div class="proceso-steps">
+    <div class="step reveal">
+      <div class="step-num">01</div>
+      <h3>Reunión inicial</h3>
+      <p>20 minutos para entender tu local, tu marca y qué querés comunicar. Sin compromiso.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">02</div>
+      <h3>Propuesta visual</h3>
+      <p>Te presentamos una propuesta de diseño concreta para el frente de tu local.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">03</div>
+      <h3>Ajustes y aprobación</h3>
+      <p>Refinamos el diseño hasta que quede exactamente como lo imaginaste.</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">04</div>
+      <h3>Implementación</h3>
+      <p>Coordinamos la producción e instalación. Vos no movés un dedo.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-final" id="contacto">
+  <div class="label">Contacto</div>
+  <h2>Trabajamos con pocas empresas a la vez para garantizar dedicación.</h2>
+  <a href="https://www.instagram.com/pana_apdv/" target="_blank">
+    Escribinos por Nuestro Instagram →
+  </a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <img src="/pana_apdv/images/logo compuesto.png">
+  <p>© 2025 PANA applied visual · Córdoba, Argentina</p>
+</footer>
+
+<script>
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+  });
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('expand'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('expand'));
+  });
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
